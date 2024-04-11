@@ -1,0 +1,63 @@
+<div class="filters-container">
+  <mat-form-field>
+    <mat-label>Select Event Type</mat-label>
+    <mat-select
+      [(value)]="selectedEventType"
+      (selectionChange)="eventSelection()"
+    >
+      @for (eventType of eventTypes; track eventType) {
+      <mat-option [value]="eventType?.value">{{
+        eventType.label | titlecase
+      }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Select Event Year</mat-label>
+    <mat-select
+      [(value)]="selectedEventYear"
+      (selectionChange)="yearSelection()"
+    >
+      @for (year of eventYears; track year) {
+      <mat-option [value]="year?.value">{{
+        year.label | titlecase
+      }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Select Event Date</mat-label>
+    <mat-select
+      [(value)]="selectedEventDate"
+      (selectionChange)="dateSelection()"
+    >
+      @for (date of eventDates; track date) {
+      <mat-option [value]="date?.value">{{
+        date.label | titlecase
+      }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field
+    *ngIf="
+      (selectedFlood$ | async) === 'floods' &&
+      (selectedYear$ | async) == 2023 &&
+      (selectedDate$ | async) === '05-09-2023'
+    "
+  >
+    <mat-label>Select Location</mat-label>
+    <mat-select
+      [(value)]="selectedLocation"
+      (selectionChange)="locationSelection()"
+    >
+      @for (location of eventLocations; track location) {
+      <mat-option [value]="location?.value">{{
+        location.label | titlecase
+      }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>

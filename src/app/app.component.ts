@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-
+import { HeaderComponent } from './components/header/header.component';
+import { FiltersComponent } from './components/filters/filters.component';
+import { FloodsDataService } from './services/floods/floods-data.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [HeaderComponent, FiltersComponent],
+  providers: [FloodsDataService],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  title = 'ng-greece-2.0';
-}
+export class AppComponent {}

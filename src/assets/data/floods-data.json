@@ -1,0 +1,127 @@
+{
+  "floods": {
+    "flood_1": {
+      "name": "Daniel",
+      "year": 2023,
+      "date": 1693872000,
+      "deaths": 17,
+      "aoi": [
+        {
+          "name": "Palamas",
+          "coords": {
+            "lat": 39.46667,
+            "lon": 22.08333
+          },
+          "maxLandFlooded": 17250.7,
+          "potentialAffected": {
+            "builtUp": 1753.9,
+            "roads": 738.7,
+            "population": 14000
+          }
+        },
+        {
+          "name": "Larissa",
+          "coords": {
+            "lat": 39.624330836,
+            "lon": 22.4203649852
+          },
+          "maxLandFlooded": 15278.6,
+          "potentialAffected": {
+            "builtUp": 302.0,
+            "roads": 289.8,
+            "population": 15000
+          }
+        },
+        {
+          "name": "Stefanovikio",
+          "coords": {
+            "lat": 39.48888800,
+            "lon": 22.76861200
+          },
+          "maxLandFlooded": 15691.0,
+          "potentialAffected": {
+            "builtUp": 239.7,
+            "roads": 420.1,
+            "population": 900
+          }
+        },
+        {
+          "name": "karditsa",
+          "coords": {
+            "lat": 39.36485,
+            "lon": 21.92191
+          },
+          "maxLandFlooded": 18519.2,
+          "potentialAffected": {
+            "builtUp": 1073.9,
+            "roads": 580.0,
+            "population": 12000
+          }
+        },
+        {
+          "name": "keramidi",
+          "coords": {
+            "lat": 39.566667,
+            "lon": 22.9
+          },
+          "maxLandFlooded": 3055.2,
+          "potentialAffected": {
+            "builtUp": 5.7,
+            "roads": 3.2,
+            "population": 150
+          }
+        },
+        {
+          "name": "kalamaki",
+          "coords": {
+            "lat": 39.570833,
+            "lon": 22.745833
+          },
+          "maxLandFlooded": 12291.9,
+          "potentialAffected": {
+            "builtUp": 339.3,
+            "roads": 813.6,
+            "population": 6300
+          }
+        }
+      ],
+      "total": {
+        "maxLandFlooded": 85906.5,
+        "potentialAffected": {
+          "builtUp": 3265.0,
+          "roads": 2806.9,
+          "population": 40700
+        }
+      }
+    },
+    "flood_2": {
+      "name": "Elias",
+      "year": 2023,
+      "date": 1695686400,
+      "deaths": 0,
+      "aoi": [
+        {
+          "name": "string",
+          "coords": {
+            "lat": 0,
+            "lon": 0
+          },
+          "maxLandFlooded": 0,
+          "potentialAffected": {
+            "builtUp": 0,
+            "roads": 0,
+            "population": 0
+          }
+        }
+      ],
+      "total": {
+        "maxLandFlooded": 0,
+        "potentialAffected": {
+          "builtUp": 0,
+          "roads": 0,
+          "population": 0
+        }
+      }
+    }
+  }
+}
