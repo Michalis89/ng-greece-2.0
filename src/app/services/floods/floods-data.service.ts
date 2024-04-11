@@ -7,7 +7,7 @@ import { Flood, Root } from '../../models/floods.model';
   providedIn: 'root',
 })
 export class FloodsDataService {
-  private apiUrl = '../../assets/data/floods-data.json';
+  private apiUrl = '../../assets/data/data.json';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -33,6 +33,19 @@ export class FloodsDataService {
         }
 
         return floods;
+      })
+    );
+  }
+
+  getAvailableDatesForYear(year: number): Observable<string[]> {
+    return this.getFloodData().pipe(
+      map((data) => {
+        const flood = data.floods[`flood_${year}`];
+        if (flood) {
+          return flood.aoi.map((area) => area.name);
+        } else {
+          return [];
+        }
       })
     );
   }

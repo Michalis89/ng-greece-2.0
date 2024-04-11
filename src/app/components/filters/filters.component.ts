@@ -1,12 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppState } from '../../state/app.state';
 import { Select, Store } from '@ngxs/store';
-import {
-  EventDate,
-  EventLocation,
-  EventTypes,
-  EventYear,
-} from '../../../shared/constants/enums';
+import { EventTypes } from '../../../shared/constants/enums';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import {
   SelectedDate,
@@ -14,14 +9,15 @@ import {
   SelectedLocation,
   SelectedYear,
 } from '../../state/app.actions';
-import { CommonModule } from '@angular/common';
-import { Observable, Subject, catchError, forkJoin, of, takeUntil } from 'rxjs';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import * as L from 'leaflet';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FloodsDataService } from '../../services/floods/floods-data.service';
+import { CustomDatePipe } from '../../pipes/custom-date.pipe';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-filters',
@@ -33,6 +29,9 @@ import { FloodsDataService } from '../../services/floods/floods-data.service';
     MatSelectModule,
     MatInputModule,
     FormsModule,
+    CustomDatePipe,
+    DatePipe,
+    MatButtonModule,
   ],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.scss',
@@ -42,6 +41,9 @@ export class FiltersComponent implements OnInit, OnDestroy {
   @Select(AppState.selectedYear) selectedYear$: Observable<number>;
   @Select(AppState.selectedDate) selectedDate$: Observable<string>;
   @Select(AppState.selectedLocation) selectedLocation$: Observable<string>;
+  @Select(AppState.availableYears) availableYears$: Observable<number[]>;
+  @Select(AppState.datesByYear) datesByYear$: Observable<any>;
+  @Select(AppState.availableAoiByDate) availableAoiByDate$: Observable<any>;
   private map: any;
   private destroy$: Subject<void> = new Subject();
   selectedEventType: string;
@@ -54,41 +56,9 @@ export class FiltersComponent implements OnInit, OnDestroy {
     { label: EventTypes.Wildfires, value: EventTypes.Wildfires },
   ];
 
-  eventYears = [
-    { label: EventYear.Year2024, value: EventYear.Year2024 },
-    { label: EventYear.Year2023, value: EventYear.Year2023 },
-    { label: EventYear.Year2022, value: EventYear.Year2022 },
-    { label: EventYear.Year2021, value: EventYear.Year2021 },
-    { label: EventYear.Year2020, value: EventYear.Year2020 },
-    { label: EventYear.Year2019, value: EventYear.Year2019 },
-  ];
-
-  eventDates = [
-    {
-      label: 'Daniel' + ' ' + '(' + EventDate.Daniel + ')',
-      value: EventDate.Daniel,
-    },
-    {
-      label: 'Elias' + ' ' + '(' + EventDate.Elias + ')',
-      value: EventDate.Elias,
-    },
-  ];
-  eventLocations = [
-    { label: 'All', value: 'all' },
-    { label: EventLocation.Larissa, value: EventLocation.Larissa },
-    { label: EventLocation.Karditsa, value: EventLocation.Karditsa },
-    { label: EventLocation.Kalamaki, value: EventLocation.Kalamaki },
-    { label: EventLocation.Keramidi, value: EventLocation.Keramidi },
-    {
-      label: EventLocation.Stefanovikio,
-      value: EventLocation.Stefanovikio,
-    },
-    { label: EventLocation.Palamas, value: EventLocation.Palamas },
-  ];
   constructor(
     private readonly http: HttpClient,
-    private readonly store: Store,
-    private readonly floodsDataService: FloodsDataService
+    private readonly store: Store
   ) {}
 
   ngOnInit(): void {
@@ -122,17 +92,14 @@ export class FiltersComponent implements OnInit, OnDestroy {
   dateSelection() {
     const selectedValue = this.selectedEventDate;
     this.store.dispatch(new SelectedDate(selectedValue));
+    this.resetMap();
   }
 
   locationSelection() {
     const selectedValue = this.selectedLocation;
-    if (selectedValue === 'all') {
-      this.store.dispatch(new SelectedLocation(selectedValue));
-      this.displayAllLocations();
-    } else {
-      this.store.dispatch(new SelectedLocation(selectedValue));
-      this.loadGeoJSONAndSetView();
-    }
+    this.store.dispatch(new SelectedLocation(selectedValue));
+    this.loadGeoJSONAndSetView();
+    this.resetMap();
   }
 
   private initMap() {
@@ -207,53 +174,5 @@ export class FiltersComponent implements OnInit, OnDestroy {
     } else {
       console.error('Invalid bounds');
     }
-  }
-
-  private displayAllLocations() {
-    this.map.eachLayer((layer: any) => {
-      if (!layer._url) {
-        this.map.removeLayer(layer);
-      }
-    });
-    const requests: Observable<any>[] = [];
-
-    const locations = [
-      EventLocation.Larissa,
-      EventLocation.Karditsa,
-      EventLocation.Stefanovikio,
-      EventLocation.Kalamaki,
-      EventLocation.Keramidi,
-    ];
-
-    locations.forEach((location) => {
-      requests.push(
-        this.http
-          .get(
-            `../../../../assets/data/${this.selectedEventType}/${this.selectedEventYear}/${this.selectedEventDate}/${location}/observedEventA_v1.geojson`
-          )
-          .pipe(
-            catchError((error) => {
-              console.error(`Failed to load GeoJSON for ${location}`, error);
-              return of(null);
-            })
-          )
-      );
-    });
-
-    forkJoin(requests).subscribe((responses: any[]) => {
-      responses.forEach((response) => {
-        if (response) {
-          const layer = L.geoJSON(response, {
-            style: {
-              fillColor: 'blue',
-              color: 'blue',
-              weight: 2,
-            },
-          }).addTo(this.map);
-          this.fitMapToBounds(layer);
-          this.map.setView([39.53158493558717, 22.137451171875004], 9);
-        }
-      });
-    });
   }
 }

@@ -5,12 +5,12 @@ export const enum EventTypes {
 }
 
 export const enum EventYear {
-  Year2019 = '2019',
-  Year2020 = '2020',
-  Year2021 = '2021',
-  Year2022 = '2022',
-  Year2023 = '2023',
-  Year2024 = '2024',
+  Year2019 = 2019,
+  Year2020 = 2020,
+  Year2021 = 2021,
+  Year2022 = 2022,
+  Year2023 = 2023,
+  Year2024 = 2024,
 }
 
 export const enum EventDate {
