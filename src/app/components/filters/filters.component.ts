@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AppState } from '../../state/app.state';
 import { Select, Store } from '@ngxs/store';
 import { EventTypes } from '../../../shared/constants/enums';
@@ -10,7 +10,7 @@ import {
   SelectedYear,
 } from '../../state/app.actions';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as L from 'leaflet';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -36,7 +36,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.scss',
 })
-export class FiltersComponent implements OnInit, OnDestroy {
+export class FiltersComponent implements OnInit {
   @Select(AppState.selectedFlood) selectedFlood$: Observable<string>;
   @Select(AppState.selectedYear) selectedYear$: Observable<number>;
   @Select(AppState.selectedDate) selectedDate$: Observable<string>;
@@ -44,12 +44,12 @@ export class FiltersComponent implements OnInit, OnDestroy {
   @Select(AppState.availableYears) availableYears$: Observable<number[]>;
   @Select(AppState.datesByYear) datesByYear$: Observable<any>;
   @Select(AppState.availableAoiByDate) availableAoiByDate$: Observable<any>;
+
   private map: any;
-  private destroy$: Subject<void> = new Subject();
-  selectedEventType: string;
-  selectedEventYear: number;
-  selectedEventDate: string;
-  selectedLocation: string;
+  selectedEventType: string | null;
+  selectedEventYear: number | null;
+  selectedEventDate: string | null;
+  selectedLocation: string | null;
 
   eventTypes = [
     { label: EventTypes.Floods, value: EventTypes.Floods },
@@ -63,42 +63,38 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initMap();
-    this.selectedFlood$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.resetMap());
-    this.selectedYear$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.resetMap());
-    this.selectedDate$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.resetMap());
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   eventSelection() {
     const selectedValue = this.selectedEventType;
-    this.store.dispatch(new SelectedFlood(selectedValue));
+    this.store.dispatch(new SelectedFlood(selectedValue as string));
   }
 
   yearSelection() {
     const selectedValue = this.selectedEventYear;
-    this.store.dispatch(new SelectedYear(selectedValue));
+    this.store.dispatch(new SelectedYear(selectedValue as number));
   }
 
   dateSelection() {
     const selectedValue = this.selectedEventDate;
-    this.store.dispatch(new SelectedDate(selectedValue));
-    this.resetMap();
+    this.store.dispatch(new SelectedDate(selectedValue as string));
   }
 
   locationSelection() {
     const selectedValue = this.selectedLocation;
-    this.store.dispatch(new SelectedLocation(selectedValue));
+    this.store.dispatch(new SelectedLocation(selectedValue as string));
     this.loadGeoJSONAndSetView();
+  }
+
+  reset() {
+    this.selectedEventType = null;
+    this.selectedEventYear = null;
+    this.selectedEventDate = null;
+    this.selectedLocation = null;
+    this.store.dispatch(new SelectedFlood(''));
+    this.store.dispatch(new SelectedYear(0));
+    this.store.dispatch(new SelectedDate(''));
+    this.store.dispatch(new SelectedLocation(''));
     this.resetMap();
   }
 

@@ -11,10 +11,10 @@ import { Floods } from '../models/floods.model';
 import { catchError, distinctUntilChanged, map, of } from 'rxjs';
 
 export class AppStateModel {
-  selectedFlood: string;
-  selectedYear: number;
-  selectedDate: string;
-  selectedLocation: string;
+  selectedFlood: string | null;
+  selectedYear: number | null;
+  selectedDate: string | null;
+  selectedLocation: string | null;
   floods: Floods;
   availableYears: number[];
   datesByYear: { year: number; dates: number[] }[];
