@@ -13,7 +13,8 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field *ngIf="selectedFlood$ | async">
+  @if (selectedFlood$ | async) {
+  <mat-form-field>
     <mat-label>Select Event Year</mat-label>
     <mat-select
       [(value)]="selectedEventYear"
@@ -24,17 +25,18 @@
       }
     </mat-select>
   </mat-form-field>
-
-  <mat-form-field *ngIf="selectedYear$ | async">
+  } @if (selectedYear$ | async) {
+  <mat-form-field>
     <mat-label>Select Event Date</mat-label>
     <mat-select
       [(value)]="selectedEventDate"
       (selectionChange)="dateSelection()"
-      >@for (dateGroup of datesByYear$ |async; track dateGroup){
+    >
+      @for (dateGroup of datesByYear$ |async; track dateGroup) {
       <ng-container>
         <ng-container *ngIf="selectedEventYear === dateGroup.year">
           <ng-container>
-            @for (date of dateGroup.dates; track date){
+            @for (date of dateGroup.dates; track date) {
             <mat-option [value]="date">{{ date | customDate }}</mat-option>
             }
           </ng-container>
@@ -43,7 +45,8 @@
       }
     </mat-select>
   </mat-form-field>
-
+  } @if ( (selectedFlood$ | async) && (selectedYear$ | async) && (selectedDate$
+  | async)) {
   <mat-form-field
     *ngIf="
       (selectedFlood$ | async) &&
@@ -64,6 +67,7 @@
       </ng-container>
     </mat-select>
   </mat-form-field>
+  }
 
   <button mat-stroked-button color="accent" (click)="locationSelection()">
     Apply
